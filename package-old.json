@@ -1,12 +1,11 @@
 {
   "name": "verktyget",
-  "version": "0.0.31",
-  "description": "Testing stuff",
+  "version": "0.0.2",
+  "description": "Useful tools for building websites",
   "author": "Robin Isaksson <robin.isaksson@gmail.com> (http://robinisaksson.com)",
   "license": "MIT",
   "main": "dist/verktyget.js",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babelify": "^7.3.0",
     "browserify": "^13.1.1",
@@ -18,11 +17,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "npx babel src/utils --out-file dist/verktyget.js",
     "start": "npm run watch:js",
-    "build": "babel src/utils/* --presets babel-preset-env --out-file dist/verktyget.js",
-    "_build": "npm run build:js",
-    "prepublishOnly": "npm run build",
+    "build": "npm run build:js",
+    "prepublish": "npm run build",
     "watch:js": "watchify src/utils/* --debug --verbose --outfile dist/verktyget.js --transform [ babelify --only src --presets env ]",
     "build:js": "browserify src/utils/* --transform [ babelify --only src --presets env ] | uglifyjs -c > dist/verktyget.js",
     "eslint": "eslint src/js/**; exit 0"

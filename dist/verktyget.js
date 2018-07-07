@@ -1,97 +1,3 @@
-(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
-'use strict';
-
-var _deviceInfo = require('./utils/device-info.js');
-
-var _dom = require('./utils/dom.js');
-
-},{"./utils/device-info.js":2,"./utils/dom.js":3}],2:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-/*
-Usage:
-var isMobile = DeviceInfo.IsMobile();
-
-Functions:
-IsMobile      - True / False
-GetPrefix     - Returns browser prefix {object} - {dom: "WebKit", lowercase: "webkit", css: "-webkit-", js: "Webkit"}
-
-GetSize       - Returns {object} - {x: 1920, y: 1080}
-GetScroll     - Returns {object} - {x: 0, y: 999}
-
-Resize        - Set new size.             Make sure to listen for 'resize' - window.addEventListener('resize', Resize);
-Scroll        - Set new scroll position.  Make sure to listen for 'scroll'  - window.addEventListener('resize', Resize);
-*/
-
-var DeviceInfo = {
-  Init: function Init() {
-    this.SetPrefix();
-    this.Scroll();
-    this.Resize();
-
-    // Moved to project code
-    // window.addEventListener('resize', Resize);
-    // window.addEventListener('scroll', this.Scroll.bind(this));
-
-    return this;
-  },
-  SetPrefix: function SetPrefix() {
-
-    var styles = window.getComputedStyle(document.documentElement, '');
-    var pre = (Array.prototype.slice.call(styles).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1];
-
-    var dom = 'WebKit|Moz|MS|O'.match(new RegExp('(' + pre + ')', 'i'))[1];
-
-    // Object containing browser prefixes
-    // {dom: "WebKit", lowercase: "webkit", css: "-webkit-", js: "Webkit"}
-    this.prefix = {
-      dom: dom,
-      lowercase: pre,
-      css: '-' + pre + '-',
-      js: pre[0].toUpperCase() + pre.substr(1)
-    };
-  },
-  GetPrefix: function GetPrefix() {
-    return this.prefix;
-  },
-
-
-  // Try to get all touch devices except "Desktop computers"
-  IsMobile: function IsMobile() {
-    var isMobile = navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(Android)|(BlackBerry)|(IEMobile)|(Windows Phone)|(kindle)|(Opera Mini)|(webOS)/i) !== null;
-    return isMobile;
-  },
-
-
-  // http://stackoverflow.com/questions/1248081/get-the-browser-viewport-dimensions-with-javascript
-  Resize: function Resize() {
-    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-
-    this.size = { x: w, y: h };
-  },
-  GetSize: function GetSize() {
-    return this.size;
-  },
-  Scroll: function Scroll() {
-    var scrollX = window.pageXOffset || document.documentElement.scrollLeft; // || document.body.scrollLeft;
-    var scrollY = window.pageYOffset || document.documentElement.scrollTop; // || document.body.scrollTop;
-
-    this.scroll = { x: scrollX, y: scrollY };
-  },
-  GetScroll: function GetScroll() {
-    return this.scroll;
-  }
-};
-
-// const Resize = throttle(DeviceInfo.Resize.bind(DeviceInfo), 200);
-
-exports.default = DeviceInfo.Init();
-
-},{}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -120,10 +26,11 @@ NodelistToArray(nodelist) // return array
 
 */
 
-var DOM = {
+var DOM = exports.DOM = {
 
   // querySelector
   Qs: function Qs(selector, scopeNode) {
+    // scopeNode = scopeNode || document;
     return scopeNode.querySelector(selector);
   },
 
@@ -275,7 +182,11 @@ var DOM = {
     return Array.prototype.slice.call(nodelist);
   }
 };
+'use strict';
 
-exports.default = DOM;
-
-},{}]},{},[1]);
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var sensitiveWords = exports.sensitiveWords = function sensitiveWords(content, words) {
+    return content.replace(new RegExp(words.join('|'), 'ig'), '****');
+};
