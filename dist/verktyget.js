@@ -188,42 +188,25 @@ var DeviceInfo = exports.DeviceInfo = {
 
 // Run Init to set initial variables & sizes
 DeviceInfo.Init();
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-/*
-Usage:
-var node = DOM.Qs('.className', document);      // node
-var nodes = DOM.QsAll('.className', document);  // nodelist
-var parent = DOM.FindParentTag(node, 'a');
-var link = DOM.Create('a', {href: 'http://google.com', class: 'link'});
-DOM.Add(link, node); // node, parent
-DOM.AddAt(link, node, 0); // node, parent, index
+exports.DOM = undefined;
 
-AddAfter (node, parent, index)
-WrapNode return wrapperNode
-Remove (parent, child)
-Style (node, styles, dom_update)
-AbsoluteY(node) // return top position of node
-AddClass(node, classname)
-RemoveClass(node, classname)
-ReplaceClass(node, className) // Remove all other classes, except 'className'
-HasClass(node, classname)
-ToggleClass(node, className, toggleName = undefined) // toggle or turn on/off
-NodelistToArray(nodelist) // return array
+var _lol = require('./lol');
 
-*/
+var _lol2 = _interopRequireDefault(_lol);
 
-// import map from 'lodash/map';
-
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var DOM = exports.DOM = {
 
   // querySelector
   Qs: function Qs(selector, scopeNode) {
-    console.log(ToObject);
+    var lol = _lol2.default.test();
+    console.log('lol: ', _lol2.default, lol);
     scopeNode = scopeNode ? scopeNode : document;
     return scopeNode.querySelector(selector);
   },
@@ -376,7 +359,28 @@ var DOM = exports.DOM = {
   NodelistToArray: function NodelistToArray(nodelist) {
     return Array.prototype.slice.call(nodelist);
   }
-};
+}; /*
+   Usage:
+   var node = DOM.Qs('.className', document);      // node
+   var nodes = DOM.QsAll('.className', document);  // nodelist
+   var parent = DOM.FindParentTag(node, 'a');
+   var link = DOM.Create('a', {href: 'http://google.com', class: 'link'});
+   DOM.Add(link, node); // node, parent
+   DOM.AddAt(link, node, 0); // node, parent, index
+   
+   AddAfter (node, parent, index)
+   WrapNode return wrapperNode
+   Remove (parent, child)
+   Style (node, styles, dom_update)
+   AbsoluteY(node) // return top position of node
+   AddClass(node, classname)
+   RemoveClass(node, classname)
+   ReplaceClass(node, className) // Remove all other classes, except 'className'
+   HasClass(node, classname)
+   ToggleClass(node, className, toggleName = undefined) // toggle or turn on/off
+   NodelistToArray(nodelist) // return array
+   
+   */
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -480,3 +484,29 @@ var EventDispatcher = exports.EventDispatcher = function () {
 
   return EventDispatcher;
 }();
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var LOL = function () {
+  function LOL() {
+    _classCallCheck(this, LOL);
+  }
+
+  _createClass(LOL, [{
+    key: 'test',
+    value: function test() {
+      console.log('LOL Test works!');
+    }
+  }]);
+
+  return LOL;
+}();
+
+exports.default = LOL;
