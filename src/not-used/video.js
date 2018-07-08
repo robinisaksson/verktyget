@@ -1,13 +1,13 @@
+
+import EventDispatcher from './event-dispatcher';
 import DOM from './dom';
 import DeviceInfo from './device-info';
-import EventDispatcher from './event-dispatcher';
 import VideoLoader from './video-loader';
 import ResponsiveVideoLoader from './responsive-video-loader';
 import ImageLoader from './image-loader';
 
 
-
-class Video extends EventDispatcher {
+export class Video extends EventDispatcher {
 
 
   constructor(node, urls, sizes, options) {
@@ -37,7 +37,7 @@ class Video extends EventDispatcher {
     this.sizes = sizes; // [767, 1024, 1280]
     this.node = node;
     this.width = this.node.offsetWidth;
-    console.log('media? ', this.node);
+    
     if (this.urls.length !== this.sizes.length) {
       console.log('! Amount of Urls does not match amount of Sizes');
     }
@@ -80,7 +80,8 @@ class Video extends EventDispatcher {
   }
 
   setCover(urls, sizes) {
-
+    
+    console.log('SetCover function not ');
     // this.coverUrl = url;
     //
     // // Cover
@@ -277,12 +278,10 @@ class Video extends EventDispatcher {
 
   destroy() {
 
-    console.log("VideoPlayback::destroy");
-
+    // console.log("VideoPlayback::destroy");
     this.revert();
     super.destroy();
 
   }
 
 }
-export default Video;

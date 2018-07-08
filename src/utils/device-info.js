@@ -13,7 +13,7 @@ Resize        - Set new size.             Make sure to listen for 'resize' - win
 Scroll        - Set new scroll position.  Make sure to listen for 'scroll'  - window.addEventListener('resize', Resize);
 */
 
-const DeviceInfo = {
+export const DeviceInfo = {
 
   Init () {
     this.SetPrefix();
@@ -85,6 +85,5 @@ const DeviceInfo = {
 
 }
 
-// const Resize = throttle(DeviceInfo.Resize.bind(DeviceInfo), 200);
-
-export default DeviceInfo.Init();
+// Run Init to set initial variables & sizes
+DeviceInfo.Init();

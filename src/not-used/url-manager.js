@@ -18,8 +18,6 @@ const URLManager = {
 		return this;
 	},
 
-
-
 	// EVENTS
 	OnUrlChanged(e) {
 		URLManager.SetPath(URLManager.GetURL());
@@ -29,8 +27,6 @@ const URLManager = {
 	FireHistoryChange() {
 		URLManager._eventDispatcher.dispatchEvent({type: 'onUrlChange', target: this });
 	},
-
-
 
 	// ---------------------
 	// Setters
@@ -53,12 +49,9 @@ const URLManager = {
 		return false;
 	},
 
-
 	SetPath(url) {
 		URLManager._path = URLManager.GetPathFromURL(url);
 	},
-
-
 
 	// ---------------------
 	// Getters
@@ -70,7 +63,6 @@ const URLManager = {
 	GetPath() {
 		return URLManager._path;
 	},
-
 
 	GetPathList() {
 		var path = URLManager._path;
@@ -119,7 +111,6 @@ const URLManager = {
 		return "";
 	},
 
-
 	// ---------------------
 	// Actions
 	// ---------------------
@@ -153,7 +144,6 @@ const URLManager = {
 		// }
 	},
 
-
 	PerformSilent() {
 		window.history.pushState({
 			historyNum: URLManager._historyLength++
@@ -165,7 +155,6 @@ const URLManager = {
 		// }
 	},
 
-
 	/**
 	 * Returns wether the URL is absolute or not(relaitve).
 	 *
@@ -176,9 +165,6 @@ const URLManager = {
 		var r = new RegExp('^(?:[a-z]+:)?//', 'i');
 		return r.test(url);
 	},
-
-
-
 
 
 	// --------------------------------------------------------
@@ -197,9 +183,6 @@ const URLManager = {
 		URLManager._eventDispatcher.dispatchEvent(event);
 	},
 
-
-
 }
-
 
 export default URLManager;

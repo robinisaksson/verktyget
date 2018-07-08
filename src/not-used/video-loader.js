@@ -2,25 +2,20 @@
 import EventDispatcher from './event-dispatcher';
 import DeviceInfo from './device-info';
 
-
-class VideoLoader extends EventDispatcher {
+export class VideoLoader extends EventDispatcher {
 
   constructor() {
 
     super();
 
-    // this.url = url;
     this.videoNode = document.createElement("video");
-
-
-
     const autoPlayOnMobile = true;
 
     // Add attribute for mobile auto-play
     if (autoPlayOnMobile === true && DeviceInfo.IsMobileDevice() === true) {
-      this.videoNode.setAttribute('muted', 'true');
-      this.videoNode.setAttribute('playsinline', 'true');
-      this.videoNode.setAttribute('webkit-playsinline', 'true');
+      this.videoNode.setAttribute('muted'); // No value required
+      this.videoNode.setAttribute('playsinline');
+      this.videoNode.setAttribute('webkit-playsinline');
     }
 
 
@@ -132,5 +127,3 @@ class VideoLoader extends EventDispatcher {
 
 
 }
-
-export default VideoLoader;

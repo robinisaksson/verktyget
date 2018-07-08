@@ -21,13 +21,14 @@ NodelistToArray(nodelist) // return array
 
 */
 
+// import map from 'lodash/map';
 
 
 export const DOM = {
 
   // querySelector
   Qs (selector, scopeNode) {
-    // scopeNode = scopeNode || document;
+    scopeNode = scopeNode ? scopeNode : document;
     return scopeNode.querySelector(selector);
   },
 
@@ -35,6 +36,7 @@ export const DOM = {
   QsAll (selector, scopeNode) {
     scopeNode = scopeNode ? scopeNode : document;
     return scopeNode.querySelectorAll(selector);
+    // return Array.prototype.slice.call(scopeNode.querySelectorAll(selector)); // return a Array[] instead of nodelist
   },
 
   // Recursive find parent

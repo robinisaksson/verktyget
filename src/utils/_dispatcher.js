@@ -1,5 +1,9 @@
 
-class EventDispatcher {
+// -------------------------------------------- //
+// --------- Internal EventDispatcher --------- //
+// -------------------------------------------- //
+
+export class _Dispatcher {
   
   constructor() {
     this.__listeners = {};    
@@ -86,5 +90,3 @@ class EventDispatcher {
   }
   
 }
-
-export default EventDispatcher;
