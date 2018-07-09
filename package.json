@@ -1,37 +1,40 @@
 {
   "name": "verktyget",
-  "version": "0.0.33",
-  "description": "Testing stuff",
-  "author": "Robin Isaksson <robin.isaksson@gmail.com> (http://robinisaksson.com)",
+  "version": "0.0.34",
   "license": "MIT",
+  "description": "Useful tools for building websites",
+  "author": "Robin Isaksson <robin.isaksson@gmail.com> (http://robinisaksson.com)",
   "main": "dist/verktyget.js",
+  "module": "dist/verktyget.mjs",
+  "jsnext:main": "dist/verktyget.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "npx babel src/utils --out-file dist/verktyget.js",
-    "start": "npm run watch:js",
-    "build": "babel src/utils/* --presets babel-preset-env --out-file dist/verktyget.js",
-    "_build": "npm run build:js",
-    "prepublishOnly": "npm run build",
-    "watch:js": "watchify src/utils/* --debug --verbose --outfile dist/verktyget.js --transform [ babelify --only src --presets env ]",
-    "build:js": "browserify src/utils/* --transform [ babelify --only src --presets env ] | uglifyjs -c > dist/verktyget.js",
-    "eslint": "eslint src/js/**; exit 0"
+    "prebuild": "eslint lib test",
+    "build": "rollup -c --environment BUILD:production",
+    "watch": "rollup -c -w",
+    "pretest": "rollup -c",
+    "test": "mocha",
+    "prepublish": "BUILD=production npm test"
   },
+  "repository": "",
   "keywords": [],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/robinisaksson/verktyget.git"
-  },
+  "files": [
+    "lib",
+    "dist"
+  ],
+  "homepage": "https://github.com/robinisaksson/verktyget#readme",
+  "dependencies": {},
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "babelify": "^7.3.0",
-    "browserify": "^13.1.1",
-    "core-js": "^2.5.1",
-    "cpx": "^1.5.0",
-    "eslint": "^3.10.2",
-    "to-object-x": "^1.5.0",
-    "uglify-js": "^3.0.23",
-    "verktyget": "^0.0.33",
-    "watchify": "^3.7.0"
+    "babel-eslint": "^7.1.1",
+    "babel-plugin-external-helpers": "^6.18.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-register": "^6.18.0",
+    "babelrc-rollup": "^3.0.0",
+    "eslint": "^4.1.1",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0",
+    "rollup": "^0.43.0",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-istanbul": "^1.1.0",
+    "rollup-watch": "^4.0.0"
   }
 }

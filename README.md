@@ -1,3 +1,2 @@
-# Verktyget.js
-
-## Work in progress. I do not recommend anyone to use this... just yet
+# Work in progress.
+Please wait for first functional version :)

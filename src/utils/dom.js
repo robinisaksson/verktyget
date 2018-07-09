@@ -22,7 +22,7 @@ NodelistToArray(nodelist) // return array
 */
 
 
-export const DOM = {
+const DOM = {
 
   // querySelector
   Qs (selector, scopeNode) {
@@ -174,3 +174,5 @@ export const DOM = {
 	}
 
 }
+
+export default DOM;
