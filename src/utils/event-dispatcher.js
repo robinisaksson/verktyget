@@ -1,6 +1,6 @@
 
 
-export default class EventDispatcher {
+export class EventDispatcher {
   
   constructor() {
     this.__listeners = {};    
@@ -87,3 +87,5 @@ export default class EventDispatcher {
   }
   
 }
+
+// export default EventDispatcher;

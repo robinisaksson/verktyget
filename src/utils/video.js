@@ -1,10 +1,10 @@
 
-import EventDispatcher from './event-dispatcher';
-import DOM from './dom';
-import DeviceInfo from './device-info';
-import VideoLoader from './video-loader';
-import ResponsiveVideoLoader from './responsive-video-loader';
-import ImageLoader from './image-loader';
+import {EventDispatcher} from './event-dispatcher';
+import {DOM} from './dom';
+import {DeviceInfo} from './device-info';
+import {VideoLoader} from './video-loader';
+import {ResponsiveVideoLoader} from './responsive-video-loader';
+import {ImageLoader} from './image-loader';
 
 
 export class Video extends EventDispatcher {

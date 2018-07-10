@@ -1,4 +1,4 @@
-import EventDispatcher from './event-dispatcher';
+import {EventDispatcher} from './event-dispatcher';
 
 export class ImageLoader extends EventDispatcher {
 
@@ -88,4 +88,4 @@ export class ImageLoader extends EventDispatcher {
   }
 }
 
-export default ImageLoader;
+// export default ImageLoader;

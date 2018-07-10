@@ -1,6 +1,6 @@
-import EventDispatcher from './event-dispatcher';
+import {EventDispatcher} from './event-dispatcher';
 
-const URLManager = {
+export const URLManager = {
 
 
 	// querySelector
@@ -185,4 +185,4 @@ const URLManager = {
 
 }
 
-export default URLManager;
+// export default URLManager;

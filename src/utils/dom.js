@@ -22,12 +22,10 @@ NodelistToArray(nodelist) // return array
 */
 
 
-const DOM = {
+export const DOM = {
 
   // querySelector
   Qs (selector, scopeNode) {
-    var lol = LOL.test();
-    console.log('lol: ', LOL, lol);
     scopeNode = scopeNode ? scopeNode : document;
     return scopeNode.querySelector(selector);
   },
@@ -174,5 +172,3 @@ const DOM = {
 	}
 
 }
-
-export default DOM;

@@ -1,9 +1,9 @@
-import DeviceInfo from "../utils/device-info";
-import EventDispatcher from '../utils/event-dispatcher';
-import ImageLoader from '../utils/image-loader';
+import {DeviceInfo} from "./device-info";
+import {EventDispatcher} from './event-dispatcher';
+import {ImageLoader} from './image-loader';
 
 
-class ResponsiveImageLoader extends EventDispatcher {
+export class ResponsiveImageLoader extends EventDispatcher {
 
   constructor(urls, sizes) {
 
@@ -77,4 +77,4 @@ class ResponsiveImageLoader extends EventDispatcher {
  }
 
 }
-export default ResponsiveImageLoader;
+// export default ResponsiveImageLoader;

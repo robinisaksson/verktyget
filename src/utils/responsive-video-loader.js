@@ -1,8 +1,8 @@
-import DeviceInfo from './device-info';
-import VideoLoader from './video-loader';
-import EventDispatcher from './event-dispatcher';
+import {DeviceInfo} from './device-info';
+import {VideoLoader} from './video-loader';
+import {EventDispatcher} from './event-dispatcher';
 
-class ResponsiveVideoLoader extends EventDispatcher {
+export class ResponsiveVideoLoader extends EventDispatcher {
 
   constructor(urls, sizes) {
 
@@ -88,4 +88,4 @@ class ResponsiveVideoLoader extends EventDispatcher {
   }
 }
 
-export default ResponsiveVideoLoader;
+// export default ResponsiveVideoLoader;

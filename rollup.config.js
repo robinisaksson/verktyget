@@ -1,28 +1,53 @@
-import babel from 'rollup-plugin-babel';
-import babelrc from 'babelrc-rollup';
 
-const babelConfig = {
-  'presets': [
-    ['env', {
-      'targets': {
-        'browsers': ['last 2 versions']
-      },
-      'loose': true
-    }]
-  ]
-};
+import babel from 'rollup-plugin-babel';
+// import resolve from 'rollup-plugin-node-resolve';
 
 export default {
-  entry: 'src/alpha.js',
+  entry: 'src/main.js',
   format: 'umd',
   moduleName: 'verktyget',
   sourceMap: true,
   plugins: [
-    babel(babelrc({
-      addExternalHelpersPlugin: false,
-      config: babelConfig,
-      exclude: 'node_modules/**'
-    }))
+    babel()
   ],
-  dest: 'dist/bundle.js'
+  dest: 'dist/verktyget.js'
 };
+
+
+
+// import babel from 'rollup-plugin-babel';
+
+// // import commonjs from 'rollup-plugin-commonjs';
+// // import pkg from './package.json';
+// 
+// export default [
+// 	// browser-friendly UMD build
+// 	{
+// 		input: 'src/main.js',
+// 		output: {
+// 			name: 'verktyget',
+// 			file: 'dist/verktyget.umd.js', //pkg.browser,
+// 			format: 'umd'
+// 		},
+// 		plugins: [
+//       babel(),
+// 			resolve() // so Rollup can find `ms`
+// 			// commonjs() // so Rollup can convert `ms` to an ES module
+// 		]
+// 	},
+// 
+// 	// CommonJS (for Node) and ES module (for bundlers) build.
+// 	// (We could have three entries in the configuration array
+// 	// instead of two, but it's quicker to generate multiple
+// 	// builds from a single configuration where possible, using
+// 	// an array for the `output` option, where we can specify 
+// 	// `file` and `format` for each target)
+// 	{
+// 		input: 'src/main.js',
+// 		// external: ['ms'],
+// 		output: [
+// 			{ file: 'dist/verktyget.cjs.js', format: 'cjs', name: 'verktyget' }, // pkg.main
+// 			{ file: 'dist/verktyget.esm.js', format: 'es' } // pkg.module
+// 		]
+// 	}
+// ];

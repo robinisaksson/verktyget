@@ -1,4 +1,4 @@
-import EventDispatcher from './event-dispatcher';
+import {EventDispatcher} from './event-dispatcher';
 
 export class AjaxRequest extends EventDispatcher {
 
@@ -115,4 +115,4 @@ export class AjaxRequest extends EventDispatcher {
 
 }
 
-export default AjaxRequest;
+// export default AjaxRequest;

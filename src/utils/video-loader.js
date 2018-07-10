@@ -1,6 +1,6 @@
 
-import EventDispatcher from './event-dispatcher';
-import DeviceInfo from './device-info';
+import {EventDispatcher} from './event-dispatcher';
+import {DeviceInfo} from './device-info';
 
 export class VideoLoader extends EventDispatcher {
 
@@ -12,7 +12,7 @@ export class VideoLoader extends EventDispatcher {
     const autoPlayOnMobile = true;
 
     // Add attribute for mobile auto-play
-    if (autoPlayOnMobile === true && DeviceInfo.IsMobileDevice() === true) {
+    if (autoPlayOnMobile === true && DeviceInfo.IsMobile() === true) {
       this.videoNode.setAttribute('muted'); // No value required
       this.videoNode.setAttribute('playsinline');
       this.videoNode.setAttribute('webkit-playsinline');

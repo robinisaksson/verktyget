@@ -1,4 +1,4 @@
-import EventDispatcher from './event-dispatcher';
+import {EventDispatcher} from './event-dispatcher';
 
 
 function URLEncodeObject(o) {
@@ -9,7 +9,7 @@ function URLEncodeObject(o) {
 	return p.join("&");
 }
 
-var _CallbackCount = 0;
+var callbackCount = 0;
 
 
 export class JSONPRequest extends EventDispatcher {
@@ -27,7 +27,7 @@ export class JSONPRequest extends EventDispatcher {
 			seperator = "&";
 		}
 
-		var callbackValue = "JSONP"+_CallbackCount++;
+		var callbackValue = "JSONP"+callbackCount++;
 		window[callbackValue] = this.onJSONPComplete;
 		data[callbackPropertyName] = callbackValue;
 
@@ -62,4 +62,4 @@ export class JSONPRequest extends EventDispatcher {
 
 }
 
-export default JSONPRequest;
+// export default JSONPRequest;
