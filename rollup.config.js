@@ -5,7 +5,7 @@ export default {
   output: [
     {
       name: 'verktyget',
-      file: 'dist/verktyget.js',
+      file: 'dist/verktyget.umd.js',
       format: 'umd'
     },
     {
