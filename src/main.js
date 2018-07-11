@@ -8,12 +8,9 @@ import {ResponsiveImageLoader} from './utils/responsive-image-loader';
 import {VideoLoader} from './utils/video-loader';
 import {ResponsiveVideoLoader} from './utils/responsive-video-loader';
 import {Video} from './utils/video';
-
 import {JSONPRequest} from './utils/jsonp-request';
 import {AjaxRequest} from './utils/ajax-request';
 import {URLManager} from './utils/url-manager';
-
-
 
 // EXPORTS
 export {
