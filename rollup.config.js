@@ -1,53 +1,25 @@
-
 import babel from 'rollup-plugin-babel';
-// import resolve from 'rollup-plugin-node-resolve';
 
 export default {
-  entry: 'src/main.js',
-  format: 'umd',
-  moduleName: 'verktyget',
-  sourceMap: true,
+  input: 'src/main.js',
+  output: [
+    {
+      name: 'verktyget',
+      file: 'dist/verktyget.umd.js',
+      format: 'umd'
+    },
+    {
+      file: 'dist/verktyget.cjs.js',
+      format: 'cjs'
+    },
+    {
+      file: 'dist/verktyget.esm.js',
+      format: 'es'
+    }
+  ],
   plugins: [
     babel()
-  ],
-  dest: 'dist/verktyget.js'
+    // resolve() // use resolve to find dependencies
+    // commonjs() // convert dependencies to an ES module
+  ]
 };
-
-
-
-// import babel from 'rollup-plugin-babel';
-
-// // import commonjs from 'rollup-plugin-commonjs';
-// // import pkg from './package.json';
-// 
-// export default [
-// 	// browser-friendly UMD build
-// 	{
-// 		input: 'src/main.js',
-// 		output: {
-// 			name: 'verktyget',
-// 			file: 'dist/verktyget.umd.js', //pkg.browser,
-// 			format: 'umd'
-// 		},
-// 		plugins: [
-//       babel(),
-// 			resolve() // so Rollup can find `ms`
-// 			// commonjs() // so Rollup can convert `ms` to an ES module
-// 		]
-// 	},
-// 
-// 	// CommonJS (for Node) and ES module (for bundlers) build.
-// 	// (We could have three entries in the configuration array
-// 	// instead of two, but it's quicker to generate multiple
-// 	// builds from a single configuration where possible, using
-// 	// an array for the `output` option, where we can specify 
-// 	// `file` and `format` for each target)
-// 	{
-// 		input: 'src/main.js',
-// 		// external: ['ms'],
-// 		output: [
-// 			{ file: 'dist/verktyget.cjs.js', format: 'cjs', name: 'verktyget' }, // pkg.main
-// 			{ file: 'dist/verktyget.esm.js', format: 'es' } // pkg.module
-// 		]
-// 	}
-// ];
