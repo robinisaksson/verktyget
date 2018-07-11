@@ -6,7 +6,7 @@
   "author": "Robin Isaksson <robin.isaksson@gmail.com> (http://robinisaksson.com)",
   "repository": "https://github.com/robinisaksson/verktyget",
   "homepage": "https://github.com/robinisaksson/verktyget#readme",
-  "main": "dist/verktyget.umd.js",
+  "main": "dist/verktyget.js",
   "module": "dist/verktyget.esm.js",
   "browser": "dist/verktyget.cjs.js",
   "keywords": [],
