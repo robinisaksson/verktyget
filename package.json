@@ -1,6 +1,6 @@
 {
   "name": "verktyget",
-  "version": "0.0.4",
+  "version": "0.0.41",
   "license": "MIT",
   "description": "Useful tools for building websites",
   "author": "Robin Isaksson <robin.isaksson@gmail.com> (http://robinisaksson.com)",
@@ -8,7 +8,7 @@
   "homepage": "https://github.com/robinisaksson/verktyget#readme",
   "main": "dist/verktyget.umd.js",
   "module": "dist/verktyget.esm.js",
-  "browser": "dist/verktyget.cjs.js",
+  "cjs": "dist/verktyget.cjs.js",
   "keywords": [],
   "files": [
     "dist",

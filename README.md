@@ -2,6 +2,8 @@
 
 > A vanilla javascript library.
 
+Disclaimer! This is just published, so bare with me as I fix bugs, update and improve.
+
 ## Features
 
 * Ajax loading
@@ -39,7 +41,7 @@ Verktyget is bundled with Rollup to these formats
 
 ```text
 dist/
-├── verktyget.js        (UMD, default)
+├── verktyget.umd.js    (UMD, default)
 ├── verktyget.cjs.js    (CommonJS)
 └── verktyget.esm.js    (ES Module)
 ```
