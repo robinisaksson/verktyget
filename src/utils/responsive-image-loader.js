@@ -26,11 +26,11 @@ export class ResponsiveImageLoader extends EventDispatcher {
   // urls = ['1.jpg', '2.jpg', '3.jpg']
   // sizes = [767, 1024, 1280]
 
-  execute(nodeWidth, firstLoad = true) {
+  execute(containerWidth, firstLoad = true) {
 
 
     var devicePixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1; // TODO Check older browsers
-    var mediaWidth = (nodeWidth === undefined) ? this.size.x : nodeWidth*devicePixelRatio; // Fallback to screen size
+    var mediaWidth = (containerWidth === undefined) ? this.size.x : containerWidth*devicePixelRatio; // Fallback to screen size
 
     var i, url, newUrl;
     for (i = 0; url = this.urls[i]; i++) {
@@ -55,26 +55,21 @@ export class ResponsiveImageLoader extends EventDispatcher {
 
 
   onResponsiveImageLoaded (event) {
-    this.image = event.target;
+    // this.image = event.target;
     // console.log('DISPATCH COMPLETE');
-    this.dispatchEvent({type: 'complete', target:this});
-  }
-
-  // Store DOM node that image will be loaded into
-  setTargetNode(node) {
-    this.node = node;
-  }
-	getTargetNode() {
-    return this.node;
+    this.dispatchEvent({type: 'complete', target: event.target});
   }
 
 
-  updateSize(mediaWidth) {
-    this.execute(mediaWidth, false);
+  updateSize(containerWidth) {
+    this.execute(containerWidth, false);
   }
 
   destroy() {
 		this.imageLoader.destroy();
+    
+    this.imageLoader.removeEventListener('complete')
+    this.imageLoader = null;
  }
 
 }
