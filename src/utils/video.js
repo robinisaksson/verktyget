@@ -220,7 +220,6 @@ export class Video extends EventDispatcher {
 
   // ------------------ Private functions ---------------------------
   onVideoLoaded(event) {
-    console.log('onVideoLoaded ', this.width);
     this.setSize(this.width);
     this.dispatchEvent({type:'complete', target:this});
   }

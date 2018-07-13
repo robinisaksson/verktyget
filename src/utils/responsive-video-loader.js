@@ -59,7 +59,7 @@ export class ResponsiveVideoLoader extends EventDispatcher {
       }
     }
     if (newUrl === undefined || newUrl === null) {
-      console.log('Warning, image might be low-res. Node width: ', mediaWidth, '  Image width: ', this.sizes[this.sizes.length-1]);
+      // console.log('Warning, video might be low-res. Node width: ', mediaWidth, '  Image width: ', this.sizes[this.sizes.length-1]);
       newUrl = this.urls[this.sizes.length-1];
     }
 
@@ -69,7 +69,6 @@ export class ResponsiveVideoLoader extends EventDispatcher {
 
       this.videoLoader.setUrl(this.url);
       this.videoLoader.execute();
-			console.log('LOAD NEW VIDEO: ', this.url);
     }
 
   }

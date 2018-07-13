@@ -40,7 +40,8 @@ export class ResponsiveImageLoader extends EventDispatcher {
       }
     }
     if (newUrl === undefined) {
-      console.log('Warning, image might be low-res. Node width: ', mediaWidth, '  Image width: ', this.sizes[this.sizes.length-1]);
+      // console.log('Warning, image might be low-res. Node width: ', mediaWidth, '  Image width: ', this.sizes[this.sizes.length-1]);
+      
       newUrl = this.urls[this.sizes.length-1];
     }
     // console.log(newUrl);
