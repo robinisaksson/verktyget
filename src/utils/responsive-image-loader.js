@@ -55,7 +55,7 @@ export class ResponsiveImageLoader extends EventDispatcher {
 
 
   onResponsiveImageLoaded (event) {
-    this.image = event.target.data;
+    this.image = event.target;
     // console.log('DISPATCH COMPLETE');
     this.dispatchEvent({type: 'complete', target:this});
   }

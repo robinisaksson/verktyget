@@ -5,7 +5,7 @@ export class ImageLoader extends EventDispatcher {
 	constructor(url) {
 		super();
 		this.url = url;
-    this.data; // HTMLImageElement;
+    this.imageNode; // HTMLImageElement;
 
     this.onLoadCompleteHandler = this.onLoadCompleteHandler.bind(this);
     this.onLoadErrorHandler = this.onLoadErrorHandler.bind(this);
@@ -13,7 +13,7 @@ export class ImageLoader extends EventDispatcher {
 	}
 
   setUrl(url) {
-    if (this.data !== undefined) {
+    if (this.imageNode !== undefined) {
       this.removeEventListeners();
     }
     this.url = url;
@@ -22,24 +22,24 @@ export class ImageLoader extends EventDispatcher {
   execute() {
 
     // create img obj
-    this.data = new Image();
+    this.imageNode = new Image();
 
     // success handler
-    this.data.addEventListener("load", this.onLoadCompleteHandler);
-    this.data.addEventListener("abort", this.onLoadErrorHandler);
-    this.data.addEventListener("error", this.onLoadErrorHandler);// for now just use the same event handler for abort, what ever abort is?..
+    this.imageNode.addEventListener("load", this.onLoadCompleteHandler);
+    this.imageNode.addEventListener("abort", this.onLoadErrorHandler);
+    this.imageNode.addEventListener("error", this.onLoadErrorHandler);// for now just use the same event handler for abort, what ever abort is?..
 
     // set source - starts loading
-    this.data.src = this.url;
+    this.imageNode.src = this.url;
   }
 
 
 
   removeEventListeners() {
 
-    this.data.removeEventListener("load", this.onLoadCompleteHandler);
-    this.data.removeEventListener("abort", this.onLoadErrorHandler);
-    this.data.removeEventListener("error", this.onLoadErrorHandler);
+    this.imageNode.removeEventListener("load", this.onLoadCompleteHandler);
+    this.imageNode.removeEventListener("abort", this.onLoadErrorHandler);
+    this.imageNode.removeEventListener("error", this.onLoadErrorHandler);
   }
 
 
@@ -52,7 +52,7 @@ export class ImageLoader extends EventDispatcher {
     //this.image = e.target;
 
     // Dispatch event, this must be the last call
-    this.dispatchEvent({type: 'complete', target:this});
+    this.dispatchEvent({type: 'complete', target:this.imageNode});
 	}
 
   // onLoadErrorHandlerBind = this.onLoadErrorHandler.bind(this);
@@ -74,14 +74,14 @@ export class ImageLoader extends EventDispatcher {
     this.removeEventListeners();
 
     // Cancel loading..
-    this.data.src = "";
-    this.data.removeAttribute("src");
-    this.data = null;
+    this.imageNode.src = "";
+    this.imageNode.removeAttribute("src");
+    this.imageNode = null;
   }
 
   destroy() {
 
-    if (this.data !== null) {
+    if (this.imageNode !== null) {
       this.cancelLoading();
       this.url = null;
     }
