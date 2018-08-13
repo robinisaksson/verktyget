@@ -1,6 +1,6 @@
 //
-import TweenMax from 'gsap';
-import TimelineMax from 'gsap/TimelineMax';
+// import TweenMax from 'gsap';
+// import TimelineMax from 'gsap/TimelineMax';
 
 import {EventDispatcher} from 'verktyget';
 import {DeviceInfo} from 'verktyget';
@@ -125,7 +125,7 @@ export class ScrollDetector extends EventDispatcher {
 			// investigate how to use requestAnimationFrame
 			// this.dispatchEvent({type:'progressWithin', target:this});
 			this.dispatchEvent({type:'progress', target:this});
-
+			
 			// Play
 			// if (progress > 0) { // play from 0 to 1
 			// 	this.tween.play();
@@ -133,17 +133,17 @@ export class ScrollDetector extends EventDispatcher {
 			//  this.tween.reverse();
 			// }
 
-			// go to a specific point in time
-			if (this.tween) {
-
-				// go smooth
-				this.tween.tweenTo(this.progress * this.tween.duration());
-
-				// just hard set it
-				// this.tween.progress(progress).pause();
-
-				// BUG When scrolling up from bottom, the animation start from wrong place
-			}
+			// // go to a specific point in time
+			// if (this.tween) {
+			// 
+			// 	// go smooth
+			// 	this.tween.tweenTo(this.progress * this.tween.duration());
+			// 
+			// 	// just hard set it
+			// 	// this.tween.progress(progress).pause();
+			// 
+			// 	// BUG When scrolling up from bottom, the animation start from wrong place
+			// }
 
 			/* ------------------------------------------------------------------------------------------ */
  			if (this.isWithin === true) return;
@@ -174,19 +174,19 @@ export class ScrollDetector extends EventDispatcher {
 
 	}
 
-	// detector.setTween(TweenMax.to(this.h3), 1, {x: 400});
-	setTween(node, duration, params) {
-
-		var tween = TweenMax.to(node, duration, params);
-
-		this.tween = new TimelineMax({smoothChildTiming: true});
-		this.tween.add(tween);
-		this.tween.pause();
-
-		// // If no timeline
-		// var this.tween = tween;
-	}
-
+	// // detector.setTween(TweenMax.to(this.h3), 1, {x: 400});
+	// setTween(node, duration, params) {
+	// 
+	// 	var tween = TweenMax.to(node, duration, params);
+	// 
+	// 	this.tween = new TimelineMax({smoothChildTiming: true});
+	// 	this.tween.add(tween);
+	// 	this.tween.pause();
+	// 
+	// 	// // If no timeline
+	// 	// var this.tween = tween;
+	// }
+	
 
 	// ScrollDetector dosent have a "resize" event. This is handeled by parent class
 	setSize(options) {
