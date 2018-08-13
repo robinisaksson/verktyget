@@ -2,90 +2,110 @@ import {EventDispatcher} from './event-dispatcher';
 
 export class ImageLoader extends EventDispatcher {
 
-	constructor(url) {
+  constructor(url, sizes = undefined) {
+		
 		super();
-		this.url = url;
-    this.imageNode; // HTMLImageElement;
-
-    this.onLoadCompleteHandler = this.onLoadCompleteHandler.bind(this);
-    this.onLoadErrorHandler = this.onLoadErrorHandler.bind(this);
-    this.onLoadErrorHandler = this.onLoadErrorHandler.bind(this);
-	}
-
-  setUrl(url) {
-    if (this.imageNode !== undefined) {
-      this.removeEventListeners();
+    
+    this.onLoadComplete = this.onLoadComplete.bind(this);
+    this.onLoadError = this.onLoadError.bind(this);
+    this.onLoadError = this.onLoadError.bind(this);
+    
+    this.image; // ImageNode
+    this.url; // URL to load
+    this.urls = Array.isArray(url) ? url : [url]; // string OR array - 'image.jpg' OR ['small.jpg', 'medium.jpg', 'large.jpg']
+    this.sizes = sizes; // [767, 1024, 1280]
+    
+    if (this.urls.length > 1 && this.urls.length !== this.sizes.length) {
+      console.log('Warning, please check that amount of URLs match amount of Sizes');
     }
-    this.url = url;
+	}
+  
+  execute(containerWidth = 0) {
+    
+    // No sizes, use first url
+    if (this.sizes === undefined) {
+      urlToLoad = this.urls[0];
+    }
+    // Mutiple sizes
+    else {
+      var i, url, urlToLoad;
+      for (i = 0; url = this.urls[i]; i++) {
+        if (containerWidth < this.sizes[i]) {
+          urlToLoad = url;
+          break;
+        }
+      }
+      // conatinerWidth is larger than image size
+      if (urlToLoad === undefined) {
+        console.log('Warning, image might be low-res. Node width: ', containerWidth, '  Image width: ', this.sizes[this.sizes.length-1]);
+        urlToLoad = this.urls[this.sizes.length-1];
+      }
+    }
+    
+    if (this.url !== urlToLoad) {
+      
+      // this.imageLoader.setUrl(this.url);
+      if (this.image !== undefined) {
+        this.removeEventListeners();
+      }
+      this.url = urlToLoad;
+      
+      // this.imageLoader.execute();
+      this.image = new Image();
+
+      this.image.addEventListener("load", this.onLoadComplete);
+      this.image.addEventListener("abort", this.onLoadError);
+      this.image.addEventListener("error", this.onLoadError);// for now just use the same event handler for abort, what ever abort is?..
+
+      // Starts loading
+      this.image.src = this.url;
+    }
   }
 
-  execute() {
-
-    // create img obj
-    this.imageNode = new Image();
-
-    // success handler
-    this.imageNode.addEventListener("load", this.onLoadCompleteHandler);
-    this.imageNode.addEventListener("abort", this.onLoadErrorHandler);
-    this.imageNode.addEventListener("error", this.onLoadErrorHandler);// for now just use the same event handler for abort, what ever abort is?..
-
-    // set source - starts loading
-    this.imageNode.src = this.url;
+  updateSize(containerWidth = 0) {
+    this.execute(containerWidth, false);
   }
-
-
 
   removeEventListeners() {
-
-    this.imageNode.removeEventListener("load", this.onLoadCompleteHandler);
-    this.imageNode.removeEventListener("abort", this.onLoadErrorHandler);
-    this.imageNode.removeEventListener("error", this.onLoadErrorHandler);
+		
+    this.image.removeEventListener("load", this.onLoadComplete);
+    this.image.removeEventListener("abort", this.onLoadError);
+    this.image.removeEventListener("error", this.onLoadError);
   }
 
-
-
-    // onLoadCompleteHandlerBind = this.onLoadCompleteHandler.bind(this);
-	onLoadCompleteHandler(event) {
+	onLoadComplete(event) {
 
     this.removeEventListeners();
-    
-    //this.image = e.target;
-
-    // Dispatch event, this must be the last call
-    this.dispatchEvent({type: 'complete', target:this.imageNode});
+    this.dispatchEvent({type: 'complete', target: this});
 	}
 
-  // onLoadErrorHandlerBind = this.onLoadErrorHandler.bind(this);
-  onLoadErrorHandler(event) {
+  onLoadError(event) {
 
     this.cancelLoading();
-
-    console.log("image failed to load!");
-    console.log(event);
+    console.log("image failed to load ", event);
     // throw new Error("Image failed to load.");
 
-    // Dispatch event, this must be the last call
     this.dispatchEvent({type: 'error', target:this});
-
   }
 
   cancelLoading() {
 
     this.removeEventListeners();
-
-    // Cancel loading..
-    this.imageNode.src = "";
-    this.imageNode.removeAttribute("src");
-    this.imageNode = null;
+		
+    this.image.src = "";
+    this.image.removeAttribute("src");
+    this.image = undefined;
   }
-
+  
   destroy() {
 
-    if (this.imageNode !== null) {
+    if (this.image !== null) {
       this.cancelLoading();
-      this.url = null;
+      this.url = undefined;
+      this.urls = undefined;
+      this.sizes = undefined;
     }
   }
 }
 
-// export default ImageLoader;
+export default ImageLoader;

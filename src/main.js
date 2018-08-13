@@ -4,7 +4,6 @@ import {EventDispatcher} from './utils/event-dispatcher';
 import {DOM} from './utils/dom';
 import {DeviceInfo} from './utils/device-info';
 import {ImageLoader} from './utils/image-loader';
-import {ResponsiveImageLoader} from './utils/responsive-image-loader';
 import {VideoLoader} from './utils/video-loader';
 import {ResponsiveVideoLoader} from './utils/responsive-video-loader';
 import {Video} from './utils/video';
@@ -18,7 +17,6 @@ export {
   DOM,
   DeviceInfo,
   ImageLoader,
-  ResponsiveImageLoader,
   VideoLoader,
   ResponsiveVideoLoader,
   Video,
