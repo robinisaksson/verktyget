@@ -4,31 +4,39 @@ import {DeviceInfo} from './device-info';
 
 export class VideoLoader extends EventDispatcher {
 
-  constructor() {
+  constructor(url) {
 
     super();
-
-    this.videoNode = document.createElement("video");
-    const autoPlayOnMobile = true;
-
-    // Add attribute for mobile auto-play
-    if (autoPlayOnMobile === true && DeviceInfo.IsMobile() === true) {
-      this.videoNode.setAttribute('muted'); // No value required
-      this.videoNode.setAttribute('playsinline');
-      this.videoNode.setAttribute('webkit-playsinline');
-    }
-
-
+    
     // Bind
-    this.onMetaDataCompleteHandler = this.onMetaDataCompleteHandler.bind(this);
-    this.onLoadCompleteHandler = this.onLoadCompleteHandler.bind(this);
-    this.onLoadProgressHandler = this.onLoadProgressHandler.bind(this);
-    this.onLoadErrorHandler = this.onLoadErrorHandler.bind(this);
+    this.onMetaDataComplete = this.onMetaDataComplete.bind(this);
+    this.onLoadComplete = this.onLoadComplete.bind(this);
+    this.onLoadError = this.onLoadError.bind(this);
+    // this.onLoadProgress = this.onLoadProgress.bind(this);
 
-    // listen
-    this.videoNode.addEventListener("loadedmetadata", this.onMetaDataCompleteHandler); // can play the whole video (if download speed is constant)
-    this.videoNode.addEventListener("progress", this.onLoadProgressHandler); // download progress
-    this.videoNode.addEventListener("error", this.onLoadErrorHandler); // on Error
+
+    if (url !== undefined) {
+      this.url = url;
+    }
+    
+    this.videoNode = document.createElement("video");
+
+    // Events
+    this.videoNode.addEventListener("loadedmetadata", this.onMetaDataComplete); // can play the whole video (if download speed is constant)
+    this.videoNode.addEventListener("error", this.onLoadError); // on Error
+    
+    // TODO - implement this solution instead: https://stackoverflow.com/questions/5138077/html5-video-file-loading-complete-event
+    // this.videoNode.addEventListener("progress", this.onLoadProgress);
+    
+    // Autoplay option?
+    // this.autoPlayOnMobile = true;
+    // // Add attribute for mobile auto-play
+    // if (this.autoPlayOnMobile === true && DeviceInfo.IsMobile() === true) {
+    //   this.videoNode.setAttribute('muted'); // No value required
+    //   this.videoNode.setAttribute('playsinline');
+    //   this.videoNode.setAttribute('webkit-playsinline');
+    // }
+    
   }
 
   getHTML() {
@@ -46,73 +54,50 @@ export class VideoLoader extends EventDispatcher {
     }
 
     // Listen, set src, load
-    this.videoNode.addEventListener("canplaythrough", this.onLoadCompleteHandler); // can play the whole video (if download speed is constant)
+    this.videoNode.addEventListener("canplaythrough", this.onLoadComplete); // can play the whole video (if download speed is constant)
     this.videoNode.src = this.url; // set source
     this.videoNode.load(); // starts loading
   }
 
+  
+  // onLoadProgress(event) {
+  // 
+  //   if (this.videoNode.buffered.length !== 0) {
+  //     var endTime = this.videoNode.buffered.end(0);
+  //     var currentProgress = ((endTime / this.videoNode.duration) * 100);
+  // 
+  //     this.dispatchEvent({type:"progress", target: currentProgress});
+  //   }
+  // }
 
-  onLoadProgressHandler(event) {
-
-    if (this.videoNode.buffered.length !== 0) {
-      var endTime = this.videoNode.buffered.end(0);
-      var currentProgress = ((endTime / this.videoNode.duration) * 100);
-
-      // console.log("currentProgress: ", currentProgress);
-    }
-
-  }
-
-  onMetaDataCompleteHandler(event) {
-
+  onMetaDataComplete(event) {
     this.dispatchEvent({type:"loadedmetadata", target:this});
   }
 
-  onLoadCompleteHandler(event) {
+  onLoadComplete(event) {
 
-    // console.log("video canPlayThrough");
-    this.videoNode.removeEventListener("canplaythrough", this.onLoadCompleteHandler);
-    // Dispatch event, this must be the last call
+    this.videoNode.removeEventListener("canplaythrough", this.onLoadComplete);
+    
     this.dispatchEvent({type:'complete', target:this});
-
   }
 
-  onLoadErrorHandler(event) {
+  onLoadError(event) {
 
     // TODO: ios7 fails here.
-    console.log("video failed to load!");
-    console.log(event);
+    console.log("Video failed to load. ", event);
 
-    this.revert();// the revert func is taking care of the state..
+    this.destroy();
 
-    // Dispatch event, this must be the last call
     this.dispatchEvent({type:'Error', target:this});
-
   }
 
-  revert() {
-
-    this.videoNode.removeEventListener("loadedmetadata", this.onMetaDataCompleteHandler);
-    this.videoNode.removeEventListener("canplaythrough", this.onLoadCompleteHandler);
-    this.videoNode.removeEventListener("progress", this.onLoadProgressHandler);
-    this.videoNode.removeEventListener("error", this.onLoadErrorHandler);
-
-    // Cancel loading..
-    this.videoNode.pause();
-    this.videoNode.src = "";
-    this.videoNode.load();
-    this.videoNode.removeAttribute("src");
-    this.videoNode = undefined;
-  }
-
+  
 
   destroy() {
 
-
+    
     // Since the task is done when CanPlayThrough is fired, then we need cancel the loading at this point..
     if (this.videoNode !== undefined) {
-
-      console.log("VideoLoader::Destroy video");
 
       // Cancel loading..
       this.videoNode.pause();
@@ -121,9 +106,12 @@ export class VideoLoader extends EventDispatcher {
       this.videoNode.removeAttribute("src");
       this.videoNode = undefined;
     }
+    
+    this.videoNode.removeEventListener("loadedmetadata", this.onMetaDataComplete);
+    this.videoNode.removeEventListener("canplaythrough", this.onLoadComplete);
+    this.videoNode.removeEventListener("error", this.onLoadError);
+    // this.videoNode.removeEventListener("progress", this.onLoadProgress);
 
     this.url = null;
   }
-
-
 }

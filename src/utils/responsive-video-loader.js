@@ -11,8 +11,6 @@ export class ResponsiveVideoLoader extends EventDispatcher {
     // BIND
     this.onVideoComplete = this.onVideoComplete.bind(this);
 
-
-
     // SIZE
     this.size = DeviceInfo.GetSize();
     this.urls = urls; // ['small.jpg', 'medium.jpg', 'large.jpg']
@@ -45,28 +43,32 @@ export class ResponsiveVideoLoader extends EventDispatcher {
     return this.videoLoader.getHTML();
   }
 
-  execute(nodeWidth, firstLoad = true) {
+  execute(containerWidth = 0, firstLoad = true) {
 
-    // var devicePixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1; // TODO Check older browsers
-    var mediaWidth = (nodeWidth === undefined) ? this.size.x : nodeWidth; // Fallback to screen size
+    // var devicePixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1;
+    // var containerWidthRetina = containerWidth*devicePixelRatio;
 
+    if (containerWidth === 0) {
+			console.log('containerWidth is 0. Stop execute');
+			return;
+		}
+		
     var i, url, newUrl;
     for (i = 0; url = this.urls[i]; i++) {
-      if (mediaWidth < this.sizes[i]) {
-        console.log('video url: ', url);
+      if (containerWidth < this.sizes[i]) {
         newUrl = url;
         break;
       }
     }
-    if (newUrl === undefined || newUrl === null) {
-      // console.log('Warning, video might be low-res. Node width: ', mediaWidth, '  Image width: ', this.sizes[this.sizes.length-1]);
+    if (newUrl === undefined) {
+      // console.log('Warning, image might be low-res. Node width: ', mediaWidth, '  Image width: ', this.sizes[this.sizes.length-1]);
+			// console.log('newUrl === undefined');
       newUrl = this.urls[this.sizes.length-1];
     }
-
-    // console.log(newUrl);
+    
     if (this.url !== newUrl || firstLoad === true) {
       this.url = newUrl;
-
+			console.log('Load video: ', url);
       this.videoLoader.setUrl(this.url);
       this.videoLoader.execute();
     }
@@ -81,9 +83,15 @@ export class ResponsiveVideoLoader extends EventDispatcher {
   }
 
 
-  setSize(nodeWidth) {
-
-    this.execute(nodeWidth, false);
+  updateSize(containerWidth) {
+    
+    // this.size = DeviceInfo.GetSize();
+		
+    this.execute(containerWidth, false);
+  }
+  
+  destroy() {
+    
   }
 }
 
