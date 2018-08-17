@@ -68,7 +68,7 @@ export class ResponsiveVideoLoader extends EventDispatcher {
     
     if (this.url !== newUrl || firstLoad === true) {
       this.url = newUrl;
-			console.log('Load video: ', url);
+			// console.log('Load video: ', url);
       this.videoLoader.setUrl(this.url);
       this.videoLoader.execute();
     }
