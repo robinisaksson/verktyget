@@ -37,7 +37,7 @@ export class ImageLoader extends EventDispatcher {
       }
       // conatinerWidth is larger than image size
       if (urlToLoad === undefined) {
-        console.log('Warning, image might be low-res. Node width: ', containerWidth, '  Image width: ', this.sizes[this.sizes.length-1]);
+        // console.log('Warning, image might be low-res. Node width: ', containerWidth, '  Image width: ', this.sizes[this.sizes.length-1]);
         urlToLoad = this.urls[this.sizes.length-1];
       }
     }
