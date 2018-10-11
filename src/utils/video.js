@@ -263,8 +263,7 @@ export class Video extends EventDispatcher {
 		
 		// Add video to DOM
 		if (this.isFirstLoad === true) {
-      // DEBUG HERE! Test if adding Video inside class have effects to autoplay
-			// DOM.Add(this.videoNode, this.containerNode);
+      this.containerNode.appendChild(this.videoNode);
 		}
     
     this.setSize();
