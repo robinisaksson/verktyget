@@ -20,7 +20,9 @@ Disclaimer! This is just published, so bare with me as I fix bugs, update and im
 
 ## Demo
 
-I'm building a demo site, that will demonstrate the different features in real life.
+There is a demo site showing some of the features here: http://verktyget.robinisaksson.com
+
+This is the Github repository for the demo site: https://github.com/robinisaksson/verktyget-demo
 
 ## Install
 
