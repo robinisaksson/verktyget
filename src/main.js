@@ -10,6 +10,7 @@ import {Video} from './utils/video';
 import {JSONPRequest} from './utils/jsonp-request';
 import {AjaxRequest} from './utils/ajax-request';
 import {URLManager} from './utils/url-manager';
+import {ScrollDetector} from './utils/scroll-detector';
 
 // EXPORTS
 export {
@@ -22,5 +23,6 @@ export {
   Video,
   JSONPRequest,
   AjaxRequest,
-  URLManager
+  URLManager,
+  ScrollDetector
 }

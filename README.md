@@ -15,7 +15,7 @@ Disclaimer! This is just published, so bare with me as I fix bugs, update and im
 * Event dispatcher
 * URL Manager
 * Device info (viewport size, scroll position, browser prefix)
-* (scroll-detection - coming soon)
+* Scroll Detection
 
 
 ## Demo
