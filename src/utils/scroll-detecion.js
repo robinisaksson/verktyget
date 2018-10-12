@@ -1,14 +1,11 @@
-//
-// import TweenMax from 'gsap';
-// import TimelineMax from 'gsap/TimelineMax';
 
-import {EventDispatcher} from 'verktyget';
-import {DeviceInfo} from 'verktyget';
-import {DOM} from 'verktyget';
+import {EventDispatcher} from './event-dispatcher';
+import {DeviceInfo} from './device-info';
+import {DOM} from './dom';
 
 export class ScrollDetector extends EventDispatcher {
 
-	constructor(node, options, debug = false) {
+	constructor(node, options) {
 		super();
 
 		// Events to listen for
@@ -18,13 +15,22 @@ export class ScrollDetector extends EventDispatcher {
 		// enterBottom
 		// leaveTop
 		// leaveBottom
-
+		
+		if (node === undefined) {
+			console.log('Node is required for Scroll Detection to work');
+			return;
+		}
+		
+		// Bind events
+		this.runUpdate = this.runUpdate.bind(this);
+		this.runSetSize = this.runSetSize.bind(this);
+		
+		// Var
 		this.setSize = this.setSize.bind(this);
-
-		this.node = node;
-		this.debug = debug;
+		// this.refresh = this.refresh.bind(this);
 		this.size = DeviceInfo.GetSize();
 		this.scroll = DeviceInfo.GetScroll();
+		this.node = node;
 		this.isWithin = false;
 		this.fromBottom = false;
 		this.fromTop = false;
@@ -35,44 +41,54 @@ export class ScrollDetector extends EventDispatcher {
 		// this.previousY = this.scroll.y; // Used for scroll direction
 		// this.scrollDirection; // up, down
 
+		
 
 		// Options are used to tell where detection should START & STOP
 		this.options = {
-			offsetTop: this.size.y*0.3,
-			offsetBottom: this.size.y*0.3, // this.size.y*0.5,
+			offsetStart: 0, // offset start position
+			offsetEnd: 0, // offset end position
 			triggerY: 0.5, // Can be a number between 0 and 1 defining the position of the trigger Y position in relation to the viewport height.
+			debug: false,
+			
+			// Extend?
+			// refreshInterval: 100
 		}
 		this.options = Object.assign(this.options, options); // Merge
-		// console.log(this.options);
+
 
 		// DEBUG - Draw visual lines for START & STOP
-		this.debug = debug;
+		// ------------------------------------------------------------------------------------------------------------
+		this.debug = this.options.debug;
 		if (this.debug) {
-			if (document.getElementById('debug-center-line') === null) {
-				// console.log('triggerY: ', this.options.triggerY);
-				this.debugCenterTop = DOM.Create('div', {'id':'debug-center-line'});
-				DOM.Style(this.debugCenterTop, {top: this.options.triggerY*this.size.y+'px', width:'30px', height: '2px', right: '0px', position: 'fixed', backgroundColor:'red'});
-				document.body.appendChild(this.debugCenterTop);
-			}
-
 			this.debugLineTop = DOM.Create('div');
 			this.debugLineBottom = DOM.Create('div');
+			this.debugCenterTop = DOM.Create('div');
 			DOM.Style(this.debugLineTop, {top:0, width:'20px', height: '1px', right: '0px', position: 'absolute', backgroundColor:'green'});
 			DOM.Style(this.debugLineBottom, {top:0, width:'20px', height: '1px', right: '0px', position: 'absolute', backgroundColor:'blue'});
+			DOM.Style(this.debugCenterTop, {top: this.options.triggerY*this.size.y+'px', width: '30px', height: '2px', right: '0px', position: 'fixed', backgroundColor:'red'});
+			
 			document.body.appendChild(this.debugLineTop);
 			document.body.appendChild(this.debugLineBottom);
+			document.body.appendChild(this.debugCenterTop);
 		}
+		// ------------------------------------------------------------------------------------------------------------
 		
-		// Set size!
-		window.requestAnimationFrame(this.setSize);
-
+		// this.scheduleRefresh();
+		// window.requestAnimationFrame(this.setSize);
+		this.setSize();
 	}
 
 	getNode() {
 		return this.node;
 	}
 
+	
+	
   update() {
+		window.requestAnimationFrame(this.runUpdate); // Delay update 1 frame
+	}
+	
+	runUpdate() {
 		if (this.position === undefined) {
 			console.log('issue?  ', this.position);
 			return;
@@ -82,7 +98,8 @@ export class ScrollDetector extends EventDispatcher {
 		this.scroll = DeviceInfo.GetScroll();
 		var adjustTriggerY = this.options.triggerY*this.size.y;
 		let scrollY = this.scroll.y; // + adjustTriggerY;
-
+		
+		
 		// // Check direction
 		// let direction = scrollY > this.previousY ? 'down' : 'up';
     // if (this.scrollDirection && direction !== this.scrollDirection) {
@@ -125,7 +142,7 @@ export class ScrollDetector extends EventDispatcher {
 			// investigate how to use requestAnimationFrame
 			// this.dispatchEvent({type:'progressWithin', target:this});
 			this.dispatchEvent({type:'progress', target:this});
-			
+
 			// Play
 			// if (progress > 0) { // play from 0 to 1
 			// 	this.tween.play();
@@ -171,54 +188,95 @@ export class ScrollDetector extends EventDispatcher {
     // this.previousY = scrollY;
     // this.scrollDirection = direction;
 
-
+		// console.log('update');
 	}
 
-	// // detector.setTween(TweenMax.to(this.h3), 1, {x: 400});
-	// setTween(node, duration, params) {
-	// 
-	// 	var tween = TweenMax.to(node, duration, params);
-	// 
-	// 	this.tween = new TimelineMax({smoothChildTiming: true});
-	// 	this.tween.add(tween);
-	// 	this.tween.pause();
-	// 
-	// 	// // If no timeline
-	// 	// var this.tween = tween;
-	// }
-	
+	// get element position (optionally relative to viewport)
+	getNodePosition(node, relativeToViewport = true) {
+		var pos = {
+			top: 0,
+			left: 0,
+			width: 0,
+			height: 0
+		};
 
-	// ScrollDetector dosent have a "resize" event. This is handeled by parent class
+		var rect = node.getBoundingClientRect();
+		pos.top = rect.top;
+		pos.left = rect.left;
+		pos.height = rect.height;
+		pos.width = rect.width;
+		
+		if (relativeToViewport === true) { 
+			pos.top += this.scroll.y;
+			pos.left += this.scroll.x;
+		}
+
+		return pos;
+	};
+	
+	// // TODO - Use a interval to reset values, until they are the same of X amount of iterations.
+	// refresh() {
+	// 	console.log('run refresh!');
+	// 	this.setSize();
+	// }
+	// 
+	// scheduleRefresh() {
+	// 	console.log(this.options.refreshInterval);
+	// 	if (this.options.refreshInterval > 0) {
+	// 		this.refreshTimeout = window.setTimeout(this.refresh, this.options.refreshInterval);
+	// 	}
+	// };
+
+
+
+	// ScrollDetector dosent have a "resize" event. You need to call setSize in your project code
 	setSize(options) {
+		
+		// Offset Top & Bottom - can be overwritten by parent
+		if (options) {
+			this.options = Object.assign(this.options, options); // Merge
+		}
+		
+		var setSize = this.runSetSize;
+		window.setTimeout(function() { setSize(); }, 100);
+		// window.requestAnimationFrame(this.runSetSize); // Delay setSize 1 frame - not enough!
+	}
+	
+	runSetSize() {
 		this.size = DeviceInfo.GetSize();
 
-
-
 		// Node position
-		this.nodeTop = DOM.AbsoluteY(this.node);
-		this.nodeHeight = this.node.offsetHeight;
-		this.nodeBottom = this.nodeTop + this.nodeHeight;
+		// OLD way of messeure node position
+		// this.nodeTop = DOM.AbsoluteY(this.node);
+		// this.nodeHeight = this.node.offsetHeight;
+		// this.nodeBottom = this.nodeTop + this.nodeHeight;
 
-		// Offset Top & Bottom - can be overwritten by parent
-		this.options = Object.assign(this.options, options); // Merge
+		var pos = this.getNodePosition(this.node)
+		this.nodeTop = pos.top;
+		this.nodeHeight = pos.height;
+		this.nodeBottom = pos.top + pos.height;
 
 		// Position of START & STOP
 		var adjustTriggerY = this.options.triggerY*this.size.y;
 		this.position = {
-			top: this.nodeTop - this.options.offsetTop - adjustTriggerY, //+ adjustTriggerY,
-			bottom: this.nodeBottom + this.options.offsetBottom - adjustTriggerY
+			top: this.nodeTop - this.options.offsetStart - adjustTriggerY, //+ adjustTriggerY,
+			bottom: this.nodeBottom + this.options.offsetEnd - adjustTriggerY
 		}
 
 		// Draw debug lines
-		if (this.debug) {
+		if (this.debug === true) {
 			DOM.Style(this.debugLineTop, {top:this.position.top + adjustTriggerY +'px'});
 			DOM.Style(this.debugLineBottom, {top: this.position.bottom + adjustTriggerY +'px'});
+			DOM.Style(this.debugCenterTop, {top: this.options.triggerY*this.size.y+'px'});
 		}
+		
 		this.update();
 	}
 
-	destroy() {}
+	destroy() {
+		// window.clearTimeout(this.refreshTimeout);
+	}
 
 }
 
-export default ScrollDetector;
+// export default ScrollDetector;
