@@ -1,6 +1,6 @@
 # Verktyget.js
 
-> A vanilla javascript library.
+> A ES6 javascript library.
 
 Disclaimer! This is just published, so bare with me as I fix bugs, update and improve.
 
@@ -100,8 +100,8 @@ var childNode = DOM.Qs('.child-node', node);
 ### Todo List
 
 * [x] First version
+* [x] Example site
 * [ ] Documentation
-* [ ] Example site
 
 
 ## Contributing
