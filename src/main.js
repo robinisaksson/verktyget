@@ -2,6 +2,11 @@
 // IMPORTS
 import {EventDispatcher} from './utils/event-dispatcher';
 import {DOM} from './utils/dom';
+
+import {MapValueInRange} from './utils/math';
+import {RandomNumFromRange} from './utils/math';
+import {Lerp} from './utils/math';
+
 import {DeviceInfo} from './utils/device-info';
 import {ImageLoader} from './utils/image-loader';
 import {VideoLoader} from './utils/video-loader';
