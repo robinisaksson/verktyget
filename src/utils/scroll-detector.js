@@ -2,6 +2,7 @@
 import {EventDispatcher} from './event-dispatcher';
 import {DeviceInfo} from './device-info';
 import {DOM} from './dom';
+import {Lerp} from './math';
 
 export class ScrollDetector extends EventDispatcher {
 
@@ -31,7 +32,7 @@ export class ScrollDetector extends EventDispatcher {
 		this.size = DeviceInfo.GetSize();
 		this.scroll = DeviceInfo.GetScroll();
 		this.node = node;
-		this.isWithin = false;
+		this.isWithin = true; // fires events first time: outside-top, outside-bottom, inside
 		this.fromBottom = false;
 		this.fromTop = false;
 		this.position = {
@@ -45,6 +46,7 @@ export class ScrollDetector extends EventDispatcher {
 
 		// Options are used to tell where detection should START & STOP
 		this.options = {
+			useAnimation: false,
 			offsetStart: 0, // offset start position
 			offsetEnd: 0, // offset end position
 			triggerY: 0.5, // Can be a number between 0 and 1 defining the position of the trigger Y position in relation to the viewport height.
@@ -81,7 +83,14 @@ export class ScrollDetector extends EventDispatcher {
 	getNode() {
 		return this.node;
 	}
-
+	
+	getProgress() {
+		return this.progress;
+	}
+	
+	getDuration() {
+		return this.position.bottom - this.position.top;
+	}
 	
 	
   update() {
@@ -93,7 +102,8 @@ export class ScrollDetector extends EventDispatcher {
 			console.log('issue?  ', this.position);
 			return;
 		}
-
+		
+		
 		// Scroll position
 		this.scroll = DeviceInfo.GetScroll();
 		var adjustTriggerY = this.options.triggerY*this.size.y;
@@ -112,9 +122,16 @@ export class ScrollDetector extends EventDispatcher {
 
 		// OUTSIDE - BOTTOM
 		if (this.progress > 1) {
+			
 			if (this.isWithin === true) {
 				this.fromBottom = true;
 				this.fromTop = false;
+				
+				// Update progress animation so it start from the end
+				if (this.options.useAnimation === true) {
+					this.progress = 1;
+					this.dispatchEvent({type:'progress', target:this});
+				}
 				this.dispatchEvent({type:'leave', target:this});
 				this.dispatchEvent({type:'leaveBottom', target:this});
 				// if (this.debug) {console.log('LEAVE from bottom')}
@@ -125,8 +142,10 @@ export class ScrollDetector extends EventDispatcher {
 		// OUTSIDE - TOP
 		else if (this.progress < 0) {
 			if (this.isWithin === true) {
+				console.log('outside top: ', this.progress);
 				this.fromBottom = false;
 				this.fromTop = true;
+				
 				this.dispatchEvent({type:'leave', target:this});
 				this.dispatchEvent({type:'leaveTop', target:this});
 				// if (this.debug) {console.log('LEAVE from top')}
@@ -137,32 +156,15 @@ export class ScrollDetector extends EventDispatcher {
 		// INSIDE
 		else {
 
-			// TODO ANIMATION
+			// USE ANIMATION
 			/* ------------------------------------------------------------------------------------------ */
-			// investigate how to use requestAnimationFrame
-			// this.dispatchEvent({type:'progressWithin', target:this});
-			this.dispatchEvent({type:'progress', target:this});
-
-			// Play
-			// if (progress > 0) { // play from 0 to 1
-			// 	this.tween.play();
-			// } else { // play from 1 to 0
-			//  this.tween.reverse();
-			// }
-
-			// // go to a specific point in time
-			// if (this.tween) {
-			// 
-			// 	// go smooth
-			// 	this.tween.tweenTo(this.progress * this.tween.duration());
-			// 
-			// 	// just hard set it
-			// 	// this.tween.progress(progress).pause();
-			// 
-			// 	// BUG When scrolling up from bottom, the animation start from wrong place
-			// }
-
+			if (this.options.useAnimation === true) {
+				this.progressTarget = this.progress;
+		    this.onProgressRAF(); // Run requestAnimationFrame
+			}
 			/* ------------------------------------------------------------------------------------------ */
+			
+				
  			if (this.isWithin === true) return;
 
 			// BOTTOM
@@ -214,6 +216,26 @@ export class ScrollDetector extends EventDispatcher {
 		return pos;
 	};
 	
+
+	onProgressRAF() {
+
+		const dif = (this.progressTarget - this.progress);
+		if (Math.abs(dif) > 0.001) {
+			this.progress = Lerp(this.progress, this.progressTarget, 0.01);
+			this.raf = window.requestAnimationFrame(this.onProgressRAF);
+		} else {
+			this.progress = this.progressTarget;
+			window.cancelAnimationFrame(this.raf);
+		}
+
+		// Update tween!
+		// console.log('progress: ', this.progress);
+		this.dispatchEvent({type:'progress', target:this});
+	}
+	
+	
+	
+	
 	// // TODO - Use a interval to reset values, until they are the same of X amount of iterations.
 	// refresh() {
 	// 	console.log('run refresh!');
@@ -237,8 +259,8 @@ export class ScrollDetector extends EventDispatcher {
 			this.options = Object.assign(this.options, options); // Merge
 		}
 		
-		var setSize = this.runSetSize;
-		window.setTimeout(function() { setSize(); }, 100);
+		var runSetSize = this.runSetSize;
+		window.setTimeout(function() { runSetSize(); }, 100);
 		// window.requestAnimationFrame(this.runSetSize); // Delay setSize 1 frame - not enough!
 	}
 	
@@ -247,22 +269,23 @@ export class ScrollDetector extends EventDispatcher {
 
 		// Node position
 		// OLD way of messeure node position
-		// this.nodeTop = DOM.AbsoluteY(this.node);
-		// this.nodeHeight = this.node.offsetHeight;
-		// this.nodeBottom = this.nodeTop + this.nodeHeight;
+		this.nodeTop = DOM.AbsoluteY(this.node);
+		this.nodeHeight = this.node.offsetHeight;
+		this.nodeBottom = this.nodeTop + this.nodeHeight;
 
-		var pos = this.getNodePosition(this.node)
-		this.nodeTop = pos.top;
-		this.nodeHeight = pos.height;
-		this.nodeBottom = pos.top + pos.height;
+		// var pos = this.getNodePosition(this.node)
+		// this.nodeTop = pos.top;
+		// this.nodeHeight = pos.height;
+		// this.nodeBottom = pos.top + pos.height;
+		
 
-		// Position of START & STOP
+		// // Position of START & STOP
 		var adjustTriggerY = this.options.triggerY*this.size.y;
 		this.position = {
-			top: this.nodeTop - this.options.offsetStart - adjustTriggerY, //+ adjustTriggerY,
+			top: this.nodeTop - this.options.offsetStart - adjustTriggerY,
 			bottom: this.nodeBottom + this.options.offsetEnd - adjustTriggerY
 		}
-
+		
 		// Draw debug lines
 		if (this.debug === true) {
 			DOM.Style(this.debugLineTop, {top:this.position.top + adjustTriggerY +'px'});
