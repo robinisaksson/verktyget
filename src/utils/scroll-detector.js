@@ -25,16 +25,17 @@ export class ScrollDetector extends EventDispatcher {
 		// Bind events
 		this.runUpdate = this.runUpdate.bind(this);
 		this.runSetSize = this.runSetSize.bind(this);
-		
-		// Var
 		this.setSize = this.setSize.bind(this);
 		// this.refresh = this.refresh.bind(this);
+		
+		// Var
 		this.size = DeviceInfo.GetSize();
 		this.scroll = DeviceInfo.GetScroll();
 		this.node = node;
 		this.isWithin = true; // fires events first time: outside-top, outside-bottom, inside
 		this.fromBottom = false;
 		this.fromTop = false;
+		this.time = 0;
 		this.position = {
 			top: 0,
 			bottom: 0
@@ -54,8 +55,9 @@ export class ScrollDetector extends EventDispatcher {
 			
 			// Extend?
 			// refreshInterval: 100
+			refreshDuration: 3000
 		}
-		this.options = Object.assign(this.options, options); // Merge
+		this.options = Object.assign(this.options, options); // TODO - Add IE fallback
 
 
 		// DEBUG - Draw visual lines for START & STOP
@@ -127,11 +129,6 @@ export class ScrollDetector extends EventDispatcher {
 				this.fromBottom = true;
 				this.fromTop = false;
 				
-				// Update progress animation so it start from the end
-				if (this.options.useAnimation === true) {
-					this.progress = 1;
-					this.dispatchEvent({type:'progress', target:this});
-				}
 				this.dispatchEvent({type:'leave', target:this});
 				this.dispatchEvent({type:'leaveBottom', target:this});
 				// if (this.debug) {console.log('LEAVE from bottom')}
@@ -142,7 +139,6 @@ export class ScrollDetector extends EventDispatcher {
 		// OUTSIDE - TOP
 		else if (this.progress < 0) {
 			if (this.isWithin === true) {
-				console.log('outside top: ', this.progress);
 				this.fromBottom = false;
 				this.fromTop = true;
 				
@@ -185,12 +181,21 @@ export class ScrollDetector extends EventDispatcher {
 			this.dispatchEvent({type:'enter', target:this}); // Send event
 			this.isWithin = true; // Block multiple events firing
 		}
-
+		
+		
+		// If scroll from bottom & up.
+		// Update progress animation so it start from the end
+		if (this.options.useAnimation === true) {
+			if (this.progress >= 1 && this.interval !== undefined) {
+				this.progress = 1;
+				this.dispatchEvent({type:'progress', target:this});
+			}
+		}
+		
 		// // Scroll direciton - Save for next update
     // this.previousY = scrollY;
     // this.scrollDirection = direction;
 
-		// console.log('update');
 	}
 
 	// get element position (optionally relative to viewport)
@@ -233,46 +238,27 @@ export class ScrollDetector extends EventDispatcher {
 		this.dispatchEvent({type:'progress', target:this});
 	}
 	
-	
-	
-	
-	// // TODO - Use a interval to reset values, until they are the same of X amount of iterations.
-	// refresh() {
-	// 	console.log('run refresh!');
-	// 	this.setSize();
-	// }
-	// 
-	// scheduleRefresh() {
-	// 	console.log(this.options.refreshInterval);
-	// 	if (this.options.refreshInterval > 0) {
-	// 		this.refreshTimeout = window.setTimeout(this.refresh, this.options.refreshInterval);
-	// 	}
-	// };
-
-
 
 	// ScrollDetector dosent have a "resize" event. You need to call setSize in your project code
 	setSize(options) {
 		
 		// Offset Top & Bottom - can be overwritten by parent
 		if (options) {
-			this.options = Object.assign(this.options, options); // Merge
+			this.options = Object.assign(this.options, options); // TODO - Add IE fallback
 		}
 		
-		var runSetSize = this.runSetSize;
-		window.setTimeout(function() { runSetSize(); }, 100);
-		// window.requestAnimationFrame(this.runSetSize); // Delay setSize 1 frame - not enough!
+		window.requestAnimationFrame(this.runSetSize); // Delay setSize 1 frame
 	}
 	
 	runSetSize() {
 		this.size = DeviceInfo.GetSize();
 
-		// Node position
-		// OLD way of messeure node position
+		// Node position - dont include transforms
 		this.nodeTop = DOM.AbsoluteY(this.node);
 		this.nodeHeight = this.node.offsetHeight;
 		this.nodeBottom = this.nodeTop + this.nodeHeight;
-
+		
+		// Node position - includes transforms
 		// var pos = this.getNodePosition(this.node)
 		// this.nodeTop = pos.top;
 		// this.nodeHeight = pos.height;
@@ -293,11 +279,49 @@ export class ScrollDetector extends EventDispatcher {
 			DOM.Style(this.debugCenterTop, {top: this.options.triggerY*this.size.y+'px'});
 		}
 		
+		
 		this.update();
+		
+		
+		// Update every 100ms for 3sec - time for DOM to be loaded & updated. Timing can be changed in options
+		if (this.interval === undefined && this.time < this.options.refreshDuration) {
+			this.interval = window.setInterval(this.runSetSize, 100);	
+			
+		} else if (this.time > this.options.refreshDuration) {
+			window.clearInterval(this.interval);
+			this.time = 0;
+			this.interval = undefined;
+		}
+		this.time += 100;
 	}
-
+	
+	
+	// TODO! TEST!!
 	destroy() {
-		// window.clearTimeout(this.refreshTimeout);
+		
+		if (this.interval !== undefined) {
+			window.clearTimeout(this.interval);
+		}
+		
+		// Var
+		if (this.raf) {
+			window.cancelAnimationFrame(this.raf);
+		}
+		if (this.options.debug === true) {
+			document.body.removeChild(this.debugLineTop);
+			document.body.removeChild(this.debugLineBottom);
+			document.body.removeChild(this.debugCenterTop);
+		}
+		
+		this.size = undefined;
+		this.scroll = undefined;
+		this.node = undefined;
+		this.isWithin = undefined;
+		this.fromBottom = undefined;
+		this.fromTop = undefined;
+		this.position = undefined;
+		this.options = undefined;
+		this.interval = undefined;
 	}
 
 }
