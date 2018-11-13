@@ -23,7 +23,7 @@ export class AjaxRequest extends EventDispatcher {
     return this.url;
   }
 
-  load() {
+  execute() {
 
     // Regular HTTP request
     this.request = new XMLHttpRequest();

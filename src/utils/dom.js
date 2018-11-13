@@ -97,12 +97,12 @@ export const DOM = {
   },
 
   // Remove node from DOM
-  Remove (parent, child) {
+  Remove(parent, child) {
     this.Kill(parent, child);
   },
 
   // node.style
-  Style (node, styles, dom_update) {
+  Style(node, styles, dom_update) {
 
     var s;
     for(s in styles) {
