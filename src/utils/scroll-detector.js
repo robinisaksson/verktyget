@@ -98,14 +98,12 @@ export class ScrollDetector extends EventDispatcher {
 		return this.isWithin;
 	}
 	
-	update() {
-		this.isWithin = true; // Force to call events again
+	forceUpdate() { // force update calls events again, ignoring it was sent first time
+		this.isWithin = false;
 		window.requestAnimationFrame(this.runUpdate); // Delay update 1 frame
 	}
 	
-	
-	
-  internalUpdate() {
+  update() {
 		window.requestAnimationFrame(this.runUpdate); // Delay update 1 frame
 	}
 	
@@ -171,7 +169,6 @@ export class ScrollDetector extends EventDispatcher {
 			
 			
  			if (this.isWithin === true) return;
-			console.log('inside! ', this.isWithin);	
 
 			// BOTTOM
 			if (this.progress >= 0.5) {
@@ -189,7 +186,6 @@ export class ScrollDetector extends EventDispatcher {
 			}
 
 			this.dispatchEvent({type:'enter', target:this}); // Send event
-			console.log('dispatch enter');
 			this.isWithin = true; // Block multiple events firing
 		}
 		
@@ -250,7 +246,16 @@ export class ScrollDetector extends EventDispatcher {
 	}
 	
 
-	
+	// ScrollDetector dosent have a "resize" event. You need to call setSize in your project code
+	setSize(options) {
+		
+		// Offset Top & Bottom - can be overwritten by parent
+		if (options) {
+			this.options = Object.assign(this.options, options); // TODO - Add IE fallback
+		}
+		
+		window.requestAnimationFrame(this.runSetSize); // Delay setSize 1 frame
+	}
 	
 	runSetSize() {
 		this.size = DeviceInfo.GetSize();
@@ -282,7 +287,7 @@ export class ScrollDetector extends EventDispatcher {
 		}
 		
 		
-		this.internalUpdate();
+		this.update();
 		
 		
 		// Update every 100ms for 3sec - time for DOM to be loaded & updated. Timing can be changed in options
@@ -296,7 +301,6 @@ export class ScrollDetector extends EventDispatcher {
 		}
 		this.time += 100;
 	}
-	
 	
 	
 	destroy() {
