@@ -2,21 +2,23 @@ import {EventDispatcher} from './event-dispatcher';
 
 export class AjaxRequest extends EventDispatcher {
 
-	constructor(url) {
+	constructor(url, options) {
 
     super();
 		
 		this.onLoadComplete = this.onLoadComplete.bind(this);
 		this.onProgress = this.onProgress.bind(this);
 		
-    this.request;
-    this.requestFormat = 'application/x-www-form-urlencoded'; //application/json
     this.progress = 0;
-
-		this.url = url;
-		this.requestData = new Object();
-    this.requestType = 'GET';
-
+    this.url = url;
+    this.request; // XMLHttpRequest
+    this.options = {
+      format: 'application/x-www-form-urlencoded', // application/json
+      data: new Object(),
+      type: 'POST', // GET
+    }
+    
+		this.options = Object.assign(this.options, options); // TODO - IE fallback
 	}
 
   getURL() {
@@ -32,37 +34,30 @@ export class AjaxRequest extends EventDispatcher {
     this.request.onreadystatechange = this.onLoadComplete;
     this.request.onprogress = this.onProgress;
     // this.request.addEventListener("progress", this.onProgress);
+    
+    this.request.open(this.options.type, this.url, true);
+    this.request.setRequestHeader('Content-Type', this.options.format); // 'application/x-www-form-urlencoded' || 'application/json'
 
-    var url = this.url;
-    var requestDataString = '';
-
-    this.request.open(this.requestType, url, true);
-    this.request.setRequestHeader('Content-Type', this.requestFormat); // 'application/x-www-form-urlencoded'
-
-    if (this.requestFormat === 'application/x-www-form-urlencoded') {
-      this.request.send(requestDataString);
-    } else if (this.requestFormat === 'application/json') {
-      this.request.send(JSON.stringify(this.requestData));
+    if (this.options.format === 'application/x-www-form-urlencoded') {
+			var dataString = this.serializeUrl(this.options.data);
+			this.request.send(dataString);
+      
+    } else if (this.options.format === 'application/json') {
+      var dataString = JSON.stringify(this.options.data);
+      this.request.send(dataString);
     }
   }
 
-
-  kill() {
-    this.request.onreadystatechange = null;
-    this.request.onprogress = null;
-    // this.request.removeEventListener("progress", this.onProgress);
-  }
-
-  destroy() {
-
-    this.kill();
-    this.url = null;
-    this.requestData = null;
-    this.requestType = null;
-
-  }
-
-
+	serializeUrl(obj) {
+		var str = [];
+		for (var p in obj) {
+			if (obj.hasOwnProperty(p)) {
+				str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+			}
+		}
+		return str.join("&");
+	}
+	
   onProgress(event) {
     if (event.lengthComputable === true) {
       this.progress = event.loaded / event.total;
@@ -93,7 +88,22 @@ export class AjaxRequest extends EventDispatcher {
       }
     }
   }
+	
+	
+  kill() {
+    this.request.onreadystatechange = null;
+    this.request.onprogress = null;
+    // this.request.removeEventListener("progress", this.onProgress);
+  }
 
+  destroy() {
+
+    this.kill();
+		this.progress = null;
+		this.url = null;
+		this.options = null;
+		this.request = null;
+  }
 
 }
 
