@@ -85,14 +85,14 @@ export const URLManager = {
 	},
 
 	GetPathFromURL(url) {
-		var regExp, hash = /(?:#)[^\s]+/g;
-
-		regExp = url.match(hash);
-
-		// return hash if it exists (high priority)
-		if (regExp !== null) {
-			return regExp[0].slice(1);
-		}
+		// var regExp, hash = /(?:#)[^\s]+/g;
+		// 
+		// regExp = url.match(hash);
+		// 
+		// // return hash if it exists (high priority)
+		// if (regExp !== null) {
+		// 	return regExp[0].slice(1);
+		// }
 
 		var pathname = /[^?\s]+/g;
 
