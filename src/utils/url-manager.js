@@ -101,7 +101,7 @@ export const URLManager = {
 		// remove host pattern (https?://host:port?/)
 		url = url.replace(/^https?:\/\/[^\s\/]+/, '');
 
-		regExp = url.match(pathname);
+		var regExp = url.match(pathname);
 
 		// otherwise return pathname
 		if (regExp !== null) {
