@@ -1,8 +1,7 @@
 # Verktyget.js
 
-> A ES6 javascript library.
+> An ES6 javascript library.
 
-Disclaimer! This is just published, so bare with me as I fix bugs, update and improve.
 
 ## Features
 
